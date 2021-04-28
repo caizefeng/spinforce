@@ -1,0 +1,36 @@
+{
+  "sphinx_file": {
+    "working_dir": "/home/.../Fe",
+    "structure_dir": "structure_all",
+    "spin_dir": "spin_all",
+    "config_dir": "config_all",
+    "input_path": "/<path-to-site-packages>/spinforce/templates/input.sx"
+  },
+  "dp_file": {
+    "output_dir": "raw_all"
+  },
+  "sphinx_path": "/<path-to-conda-prefix-where-SPHInX-in>/bin/sphinx",
+  "spin_constraint": {
+    "collinear": true,
+    "atoms": [
+      {
+        "index": 0,
+        "sampling": "uniform",
+        "bound": {
+          "high": 3,
+          "low": -3,
+          "interval": 1.0
+        }
+      },
+      {
+        "index": 1,
+        "sampling": "random",
+        "bound": {
+          "high": 4,
+          "low": -4,
+          "points": 6
+        }
+      }
+    ]
+  }
+}

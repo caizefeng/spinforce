@@ -1,0 +1,104 @@
+format paw;
+include <parameters.sx>;
+
+//aLat = 5.35 ;
+//structure {
+//    include <structures/sc.sx>;
+//    species {
+//        element="Fe" ;
+//        atom { coords = [ 0 , 0 , 0 ] ; relative ; label = "A" ;}
+//        atom { coords = [ 1 / 2 , 1 / 2 , 1 / 2 ] ; relative ; label = "B" ;}
+//    }
+//    giving an empty symmetry group switches of symmetrization
+//    symmetry {}
+//}
+
+structure {
+    include "structure.sx";
+    symmetry {}
+}
+
+
+basis {
+    eCut = 30 ; // Ry
+    kPoint {
+        coords = [ 0 , 0 , 0 ] ;
+        weight = 1 ;
+        relative ;
+    }
+    folding = 1 * [ 1 , 1 , 1 ] ;
+}
+pawPot {
+    species {
+    name = "Iron" ;
+    element = "Fe" ;
+    potType = "VASP" ;
+    potential="/home/lzhpc/WORK/caizefeng/Datasets/Pseudopotentials/PAW_PBE/Fe/POTCAR" ;
+//    lMaxRho=2;
+//    angularGrid=4;
+    }
+}
+PAWHamiltonian {
+    xc = PBE;
+    MethfesselPaxton = 1;
+    ekt = 0.5;
+    nEmptyStates = 2 * 4;
+    spinPolarized;
+//    HubbardU {
+//        site { element="Fe" ; U = 6 ; }
+//    }
+}
+spinConstraint {
+//    label ="No.1" ;
+//    constraint = 2 ;
+    file="spin-constraint.sx";
+}
+//spinConstraint {
+//    label ="A" ;
+//    constraint = 2 ;
+//}
+//spinConstraint {
+//    label ="B" ;
+//    constraint = -2.5;
+//}
+
+initialGuess {
+    waves { lcao {} }
+    rho { atomicOrbitals ;
+        atomicSpin { file="spin-initial.sx";}
+//        atomicSpin { label="A" ; spin=2; }
+//        atomicSpin { label="B" ; spin=-2; }
+        }
+}
+main {
+//    ricQN {
+//        maxSteps= 50;
+//        dEnergy = 1e-5;
+//        dF = 1e-3;
+//        maxStepLength=0.2;
+//        bornOppenheimer {
+//            scfDiag {
+//                maxSteps = 50;
+//                blockCCG {}
+//                dEnergy = 1e-7;
+//            }
+//        }
+//    }
+    scfDiag {
+        blockCCG { blockSize=64; maxStepsCCG=5; }
+//        CCG {}
+        dEnergy = 1e-7;
+        maxSteps = 500;
+//        preconditioner {
+//            type=KERKER;
+//            scaling=1;
+//            spinScaling = 1;
+//            kerkerDamping=1; }
+        mixingMethod = PULAY;
+        nPulaySteps = 7 ;
+        rhoMixing = 0.2;
+        spinMixing = 0.8;
+        dSpinMoment = 1e-8;
+    }
+    evalForces { file="forces.sx" ; }
+}
